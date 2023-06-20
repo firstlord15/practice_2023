@@ -139,15 +139,22 @@ conn = psycopg2.connect(dbname='Practice', user='postgres', password='0909', hos
 
 for item in access_logs:
     date_format = "%d/%b/%Y:%H:%M:%S %z"
-    date = datetime.strptime(item['Timestamp'], date_format)
     cursor = conn.cursor()
-    cursor.execute(f"SELECT add_access_log('{item['Title']}', "
-                   f"'{item['IP']}', "
-                   f"'{date}', '{item['URL']}', "
-                   f"{int(item['Status'])}, {int(item['Response'])})")  # Добавлена закрывающая скобка
+
+    title = item['Title']
+    ip = item['IP']
+    date = datetime.strptime(item['Timestamp'], date_format)
+    url = item['URL']
+    status = item['Status']
+    response = item['Response']
+
+    cursor.execute(f"Select add_access_log('{title}', "
+                   f"'{ip}', "
+                   f"'{date}', '{url}', "
+                   f"{status}::integer, {response}::integer)")
     cursor.close()  # закрываем курсор
     conn.commit()
-
+    print('[nice]')
 
 conn.commit()
 conn.close()  # закрываем соединение

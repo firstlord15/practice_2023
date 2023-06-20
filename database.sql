@@ -3,7 +3,6 @@ CREATE TABLE Access_logs (
     title_status_log varchar(150) not null,
     ip_address varchar(255) not null,
     request_time timestamp not null,
-    request_method VARCHAR(50) not null,
     request_path VARCHAR(255) not null,
     status_code INT not null,
     response_size INT not null
@@ -47,19 +46,18 @@ select * from Access_logs;
 
 
 CREATE OR REPLACE FUNCTION add_access_log(p_title_status_log varchar(150), p_ip_address varchar(255), p_request_time timestamp,
-    p_request_method varchar(50), p_request_path varchar(255), p_status_code int, p_response_size int)
+ p_request_path varchar(255), p_status_code int, p_response_size int)
 RETURNS VOID AS $$
 BEGIN
-    -- Проверка на уникальность IP
-    IF EXISTS (SELECT 1 FROM Access_logs WHERE ip_address = p_ip_address) THEN
-        RAISE EXCEPTION 'Такой IP уже есть';
-    END IF;
 
     -- Вставка данных в таблицу
-    INSERT INTO Access_logs (title_status_log, ip_address, request_time, request_method, request_path, status_code, response_size)
-    VALUES (p_title_status_log, p_ip_address, p_request_time, p_request_method, p_request_path, p_status_code, p_response_size);
+    INSERT INTO Access_logs (title_status_log, ip_address, request_time, request_path, status_code, response_size)
+    VALUES (p_title_status_log, p_ip_address, p_request_time, p_request_path, p_status_code, p_response_size);
 
     -- Вывод сообщения об успешной вставке
     RAISE NOTICE 'Access log added successfully';
 END;
 $$ LANGUAGE plpgsql;
+
+SELECT add_access_log('test', 'test2', '2004-10-10 00:00:00', 'test', 10, 10);
+Select * from Access_logs
