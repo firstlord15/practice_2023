@@ -15,5 +15,39 @@ CREATE TABLE Users (
     password VARCHAR not null
 );
 
+CREATE OR REPLACE FUNCTION add_access_log(p_title_status_log varchar(150), p_ip_address varchar(255), p_request_time timestamp,
+    p_request_method varchar(50), p_request_path varchar(255), p_status_code int, p_response_size int)
+RETURNS VOID AS $$
+BEGIN
+    -- Проверка на уникальность IP
+    IF EXISTS (SELECT 1 FROM Access_logs WHERE ip_address = p_ip_address) THEN
+        RAISE EXCEPTION 'Такой IP уже есть';
+    END IF;
+
+    -- Вставка данных в таблицу
+    INSERT INTO Access_logs (title_status_log, ip_address, request_time, request_method, request_path, status_code, response_size)
+    VALUES (p_title_status_log, p_ip_address, p_request_time, p_request_method, p_request_path, p_status_code, p_response_size);
+
+    -- Вывод сообщения об успешной вставке
+    RAISE NOTICE 'Access log added successfully';
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- insert into Users (login, password)
+-- values ('admin', 'admin12345'),
+--        ('first-lord15', '12345'),
+--        ('user1', 'password1'),
+--        ('user2', 'password2'),
+--        ('user3', 'password3'),
+--        ('user4', 'password4'),
+--        ('user5', 'password5');
+
+
+
 CREATE INDEX idx_ip_address ON access_logs (ip_address);
 CREATE INDEX idx_date_time ON access_logs (request_time);
+
+select add_access_log('test2', 'test4', '2004-10-10 00:00:00-07:00', 'test', 'test', 10, 10);
+
+select * from Access_logs

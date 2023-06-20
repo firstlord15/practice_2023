@@ -1,0 +1,181 @@
+Title: Apache access log (success - code 200):
+IP: 192.168.2.20
+Timestamp: 2007-07-28 10:27:10-03:00
+Method: GET
+URL: /cgi-bin/try/
+Status Code: 200
+Response Size: 3395
+_____________________________________________________
+Title: Apache access log (success - code 200):
+IP: 127.0.0.1
+Timestamp: 2006-07-28 10:22:04-03:00
+Method: GET
+URL: /
+Status Code: 200
+Response Size: 2216
+_____________________________________________________
+Title: Apache access log (failure - code 4xx):
+IP: 127.0.0.1
+Timestamp: 2006-07-28 10:27:32-03:00
+Method: GET
+URL: /hidden/
+Status Code: 404
+Response Size: 7218
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 07:01:53-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/Extranet/branches/SOW-101
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 07:01:51-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/[xxxx]/trunk
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 07:00:53-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/[xxxx]/2.5
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 07:00:53-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/Extranet/branches/SOW-101
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 07:00:21-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/[xxxx]/trunk
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 06:59:53-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/[xxxx]/2.5
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 06:59:50-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/[xxxx]/trunk
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 06:58:52-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/[xxxx]/trunk
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache unnacepted request methods (caused by TortoiseSVN):
+IP: x.x.x.90
+Timestamp: 2006-09-13 06:58:52-07:00
+Method: PROPFIND
+URL: /svn/[xxxx]/Extranet/branches/SOW-101
+Status Code: 401
+Response Size: 587
+_____________________________________________________
+Title: Apache error log:
+Client IP: 1.2.3.4
+Timestamp: 2005-12-16 01:46:23
+Error Message: Directory index forbidden by rule: /home/test/
+_____________________________________________________
+Title: Apache error log:
+Client IP: 1.2.3.4
+Timestamp: 2005-12-16 01:54:34
+Error Message: Directory index forbidden by rule: /apache/web-data/test2
+_____________________________________________________
+Title: Apache error log:
+Client IP: 1.2.3.4
+Timestamp: 2005-12-16 02:25:55
+Error Message: Client sent malformed Host header
+_____________________________________________________
+Title: Apache error log:
+Client IP: 1.2.3.4
+Timestamp: 2005-12-19 23:02:01
+Error Message: user test: authentication failure for "/~dcid/test1": Password Mismatch
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-08-12 04:05:51
+Message: Apache/1.3.11 (Unix) mod_perl/1.21 configured -- resuming normal operations
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-06-22 14:20:55
+Message: Digest: generating secret for digest authentication ...
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-06-22 14:20:55
+Message: Digest: done
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-06-22 14:20:55
+Message: Apache/2.0.46 (Red Hat) DAV/2 configured -- resuming normal operations
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-08-12 04:05:49
+Message: SIGHUP received.  Attempting to restart
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-08-12 04:05:51
+Message: suEXEC mechanism enabled (wrapper: /usr/local/apache/sbin/suexec)
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-06-24 09:06:22
+Message: pid file /opt/CA/BrightStorARCserve/httpd/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-06-24 09:06:23
+Message: Apache/2.0.46 (Red Hat) DAV/2 configured -- resuming normal operations
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-06-24 09:06:22
+Message: Digest: generating secret for digest authentication ...
+_____________________________________________________
+Title: Apache error log (startup):
+Client IP: None
+Timestamp: 2006-06-24 09:06:22
+Message: Digest: done
+_____________________________________________________
+Title: Apache error log (shutdown by TERM signal):
+Client IP: None
+Timestamp: 2006-06-22 11:35:48
+Message: caught SIGTERM, shutting down
+_____________________________________________________
+Title: Apache without resources:
+Client IP: None
+Timestamp: 2005-03-08 10:34:21
+Message: Resource temporarily unavailable: fork: Unable to fork new process
+_____________________________________________________
+Title: Apache without resources:
+Client IP: None
+Timestamp: 2005-03-08 10:34:31
+Message: Resource temporarily unavailable: fork: Unable to fork new process
+_____________________________________________________
