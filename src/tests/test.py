@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-# import psycopg2
+import psycopg2
 
 logs = []
 f = open('../../Logs.log')
@@ -9,6 +9,7 @@ for line in NotFormatLogs:
     logs.append(line)
 
 result = []
+access_logs = []
 
 access_log_pattern = r'^(\S+) \S+ \S+ \[(.*?)\] "(GET|POST) (.*?) HTTP/1\.[01]" (\d+) (\d+) "(.*?)" "(.*?)"$'
 access_success_pattern = r'^(\S+) \S+ \S+ \[(.*?)\] "(GET|POST) (.*?) HTTP/1\.[01]" 200 (\d+)$'
@@ -19,21 +20,12 @@ error_log_startup_pattern = r'^\[(.*?)\] \[(notice|warn)\] (.*)$'
 error_log_shutdown_pattern = r'^\[(.*?)\] \[(notice)\] (caught SIGTERM, shutting down)$'
 resource_unavailable_pattern = r'^\[(.*?)\] \[error\] \(11\)(Resource temporarily unavailable: fork: Unable to fork new process)$'
 
-# пытаемся подключиться к базе данных
-# conn = psycopg2.connect(dbname='Practice', user='postgres', password='0909', host='127.0.0.1')
-# cursor = conn.cursor()
 
-
-def access_log(title, ip, timestamp, http, url, status_code, response_size, referer=None, user_agent=None):
+def access_log(title, ip, timestamp, http, url, status_code, response_size):
     date_format = "%d/%b/%Y:%H:%M:%S %z"
     date = datetime.strptime(timestamp, date_format)
     output = f'Title: {title}\nIP: {ip}\nTimestamp: {date}\n'
     output += f'Method: {http}\nURL: {url}\nStatus Code: {status_code}\nResponse Size: {response_size}\n'
-
-    if referer is not None:
-        output += f'Referer: {referer}\n'
-    if user_agent is not None:
-        output += f'User-Agent: {user_agent}\n'
 
     output += '_____________________________________________________\n'
     return output
@@ -58,29 +50,65 @@ def message_log(title, timestamp, ip=None, type_message=None, message=None):
 for log in logs:
     if re.match(access_success_pattern, log):
         match = re.match(access_success_pattern, log)
-        result.append(access_log("Apache access log (success - code 200):", match.group(1), match.group(2),
+        access_logs.append({
+            'Title': "Apache access log (success - code 200):",
+            'IP': match.group(1),
+            'Timestamp': match.group(2),
+            'Method': match.group(3),
+            'URL': match.group(4),
+            'Status': '200',
+            'Response': match.group(5)
+        })
+
+        result.append(access_log("", match.group(1), match.group(2),
                                  match.group(3), match.group(4), '200', match.group(5)))
 
     elif re.match(access_log_pattern, log):
         match = re.match(access_log_pattern, log)
-        result.append(access_log("Apache access log:", match.group(1), match.group(2), match.group(3),
-                                 match.group(4), match.group(5), match.group(6), match.group(7), match.group(8)))
 
-        # cursor.execute(f"Select add_access_log(\'Apache access log', "
-        #                f"\'{match.group(1)}', '{match.group(2)}', "
-        #                f"\'{match.group(3)}', '{match.group(4)}', "
-        #                f"\'{match.group(5)}', {match.group(6)})")
-        #
-        # print('Nice')
+        access_logs.append({
+            'Title': "Apache access log:",
+            'IP': match.group(1),
+            'Timestamp': match.group(2),
+            'Method': match.group(3),
+            'URL': match.group(4),
+            'Status': match.group(5),
+            'Response': match.group(6)
+        })
+
+        result.append(access_log("", match.group(1), match.group(2), match.group(3),
+                                 match.group(4), match.group(5), match.group(6)))
 
     elif re.match(access_failure_pattern, log):
         match = re.match(access_failure_pattern, log)
+
+        access_logs.append({
+            'Title': "Apache access log (failure - code 4xx):",
+            'IP': match.group(1),
+            'Timestamp': match.group(2),
+            'Method': match.group(3),
+            'URL': match.group(4),
+            'Status': log.split()[-2],
+            'Response': match.group(5),
+        })
+
         result.append(
             access_log("Apache access log (failure - code 4xx):", match.group(1), match.group(2), match.group(3),
                        match.group(4), log.split()[-2], match.group(5)))
 
     elif re.match(tortoise_svn_pattern, log):
         match = re.match(tortoise_svn_pattern, log)
+
+        access_logs.append({
+            'Title': "Apache access log (failure - code 4xx):",
+            'IP': match.group(1),
+            'Timestamp': match.group(2),
+            'Method': match.group(3),
+            'URL': match.group(4),
+            'Status': log.split()[-2],
+            'Response': match.group(5),
+        })
+
         result.append(
             access_log("Apache unnacepted request methods (caused by TortoiseSVN):", match.group(1), match.group(2),
                        match.group(3),
@@ -106,11 +134,21 @@ for log in logs:
         result.append("Неизвестный тип лога")
         result.append('_____________________________________________________\n')
 
-f = open('../../result.txt', 'w')
+# пытаемся подключиться к базе данных
+conn = psycopg2.connect(dbname='Practice', user='postgres', password='0909', host='127.0.0.1')
 
-for log in result:
-    f.write(log)
+for item in access_logs:
+    date_format = "%d/%b/%Y:%H:%M:%S %z"
+    date = datetime.strptime(item['Timestamp'], date_format)
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT add_access_log('{item['Title']}', "
+                   f"'{item['IP']}', "
+                   f"'{date}', '{item['URL']}', "
+                   f"{int(item['Status'])}, {int(item['Response'])})")  # Добавлена закрывающая скобка
+    cursor.close()  # закрываем курсор
+    conn.commit()
 
+
+conn.commit()
+conn.close()  # закрываем соединение
 f.close()
-# cursor.close()  # закрываем курсор
-# conn.close()  # закрываем соединение
