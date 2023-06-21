@@ -1,0 +1,23 @@
+{
+    "postgres": {
+        "host": "127.0.0.1",
+        "port": "5432",
+        "dbname": "postgres",
+        "username": "postgres",
+        "password": "0909"
+    },
+    "database": {
+        "host": "localhost",
+        "port": 5432,
+        "dbname": "Practice",
+        "username": "postgres",
+        "password": "0909"
+    },
+    "log_file_path": "log/logs.log",
+    "user_editable_fields": [
+        "postgres",
+        "database",
+        "log_file_path"
+    ],
+    "log_file_mask": "*.log"
+}
