@@ -46,7 +46,7 @@ try:
         )
     """
 
-    with open('../../log/logs.log') as f:
+    with open('src/log/logs.log') as f:
         not_format_logs = f.readlines()
 
     logs = [line for line in not_format_logs]

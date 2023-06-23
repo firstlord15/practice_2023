@@ -1,7 +1,7 @@
 import json
 import psycopg2
 
-CONFIG_FILE_PATH = 'config.json'
+CONFIG_FILE_PATH = 'config/config.json'
 
 
 # Загрузка конфигурационного файла

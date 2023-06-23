@@ -8,7 +8,7 @@
     },
     "database": {
         "host": "localhost",
-        "port": 5432,
+        "port": "5432",
         "dbname": "Practice",
         "username": "postgres",
         "password": "0909"

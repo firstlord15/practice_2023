@@ -1,1 +1,0 @@
-Select * from access_logs;
