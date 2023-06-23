@@ -1,19 +1,8 @@
 from PySide6.QtWidgets import QApplication, QDialog, QLabel, QComboBox, QVBoxLayout, QPushButton, QLineEdit
 from api import find_earliest_date, find_latest_date, get_logs, get_result
+from config import db_config_main
 import psycopg2
 import sys
-
-from config import load_config
-
-config = load_config()
-
-db_config = {
-    'dbname': config['database']['dbname'],
-    'user': config['database']['username'],
-    'password': config['database']['password'],
-    'host': config['database']['host'],
-    'port': config['database']['port']
-}
 
 
 class MyForm(QDialog):
@@ -21,7 +10,7 @@ class MyForm(QDialog):
         super().__init__()
         self.setWindowTitle("Api")
 
-        conn = psycopg2.connect(**db_config)
+        conn = psycopg2.connect(**db_config_main)
         conn.autocommit = True
         cursor = conn.cursor()
 
@@ -60,13 +49,28 @@ class MyForm(QDialog):
         self.setLayout(layout)
 
     def apply_filter(self):
-        # Тут берем данные с текстовых полей и комбо бокса
+        # Получение данных с текстовых полей и комбо бокса
         selected_start_date = self.line_edit_start_date.text()
         selected_end_date = self.line_edit_end_date.text()
         selected_ip = self.combo_box_ip.currentText()
 
-        logs = get_logs(selected_start_date, selected_end_date, selected_ip)  # Форматируем, фильтруем
-        get_result(logs)  # загружаем файл
+        # Если поле начальной даты не заполнено, используется самая ранняя дата
+        if selected_start_date == '':
+            selected_start_date = find_earliest_date()
+
+        # Если поле конечной даты не заполнено, используется самая поздняя дата
+        if selected_end_date == '':
+            selected_end_date = find_latest_date()
+
+        # Если выбран IP 'None', присваивается значение None
+        if selected_ip == 'None':
+            selected_ip = None
+
+        # Получение отфильтрованных логов
+        logs = get_logs(selected_start_date, selected_end_date, selected_ip)
+
+        # Сохранение результата в файл
+        get_result(logs)
 
         self.accept()
 
@@ -78,5 +82,4 @@ if __name__ == "__main__":
     form.show()
 
     form.setFixedSize(400, 200)
-
     sys.exit(app.exec())

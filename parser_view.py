@@ -1,22 +1,32 @@
 import sys
-from config import load_config
+from config import db_config_main
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, \
     QComboBox, QPushButton
 from PySide6.QtGui import QColor, QIcon, QPalette, Qt
 from PySide6.QtCore import Qt
 import psycopg2
-
-config = load_config()
-
-db_config = {
-    'dbname': config['database']['dbname'],
-    'user': config['database']['username'],
-    'password': config['database']['password'],
-    'host': config['database']['host'],
-    'port': config['database']['port']
-}
+import api_view
 
 data_cache = {}  # Словарь для кэширования данных
+
+
+def check():
+    conn = psycopg2.connect(**db_config_main)
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM access_logs")
+    result = cursor.fetchone()
+    record_count = result[0]  # Количество записей в таблице
+
+    cursor.close()
+    conn.close()
+
+    if record_count == 0:
+        # Если база данных пуста, показываем сообщение
+        print('База данных пуста. Открытие приложения невозможно.')
+        sys.exit()
+
+
+check()
 
 
 class MainWindow(QMainWindow):
@@ -29,7 +39,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(icon)
 
         # Подключение к базе данных
-        conn = psycopg2.connect(**db_config)
+        conn = psycopg2.connect(**db_config_main)
         cursor = conn.cursor()
 
         # Выполнение запроса для извлечения данных из таблицы
@@ -38,6 +48,7 @@ class MainWindow(QMainWindow):
 
         cursor.execute(query)
         # Получение списка названий столбцов
+
         column_names = [desc[0] for desc in cursor.description]
 
         # Получение списка уникальных IP-адресов
@@ -79,6 +90,8 @@ class MainWindow(QMainWindow):
         self.filter_button = QPushButton("Применить фильтр")
         self.filter_button.setFixedWidth(200)
         self.filter_button.clicked.connect(self.apply_filter)
+        self.api_button = QPushButton("Сохранить в json файле")
+        self.api_button.clicked.connect(self.api)
 
         # Обработчики событий для флажков
         self.sort_ip_button.clicked.connect(self.sort_table_ip)
@@ -92,6 +105,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.sort_date_button)
         layout.addWidget(self.ip_combobox)
         layout.addWidget(self.filter_button)
+        layout.addWidget(self.api_button)
         widget.setLayout(layout)
 
         # Установка виджета в главное окно
@@ -105,7 +119,7 @@ class MainWindow(QMainWindow):
             return data_cache[query]
         else:
             # Подключение к базе данных
-            conn = psycopg2.connect(**db_config)
+            conn = psycopg2.connect(**db_config_main)
             cursor = conn.cursor()
 
             try:
@@ -144,6 +158,11 @@ class MainWindow(QMainWindow):
         date_column_index = 3  # Индекс столбца даты
         self.table_widget.sortItems(date_column_index, Qt.SortOrder.AscendingOrder)
 
+    @staticmethod
+    def api():
+        exec(open('api_view.py').read())
+        sys.exit()
+
     def apply_filter(self):
         selected_ip = self.ip_combobox.currentText()
 
@@ -159,10 +178,10 @@ class MainWindow(QMainWindow):
             self.table_widget.setRowHidden(row, item.text() != selected_ip)
 
 
-if __name__ == "__main__":
+def start_program():
     app = QApplication(sys.argv)
-
     # Установка темного фона
+
     palette = QApplication.palette()
     palette.setColor(QPalette.Base, QColor(30, 30, 30))
     palette.setColor(QPalette.Text, QColor(255, 255, 255))
@@ -173,3 +192,7 @@ if __name__ == "__main__":
     window.show()
 
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    start_program()

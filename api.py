@@ -1,25 +1,13 @@
 from datetime import datetime
+from config import db_config_main, RESULT_PATH
 import psycopg2
 import json
-from config import load_config
 import random
-
-# Загрузка конфигурации из файла
-config = load_config()
-
-# Конфигурация подключения к БД
-db_config = {
-    'dbname': config['database']['dbname'],
-    'user': config['database']['username'],
-    'password': config['database']['password'],
-    'host': config['database']['host'],
-    'port': config['database']['port']
-}
 
 
 def find_unique_ips():
     try:
-        conn = psycopg2.connect(**db_config)
+        conn = psycopg2.connect(**db_config_main)
         cursor = conn.cursor()
 
         query = "SELECT DISTINCT ip_address FROM access_logs"
@@ -44,7 +32,7 @@ def find_unique_ips():
 
 def find_earliest_date():
     try:
-        conn = psycopg2.connect(**db_config)
+        conn = psycopg2.connect(**db_config_main)
         cursor = conn.cursor()
 
         query = "SELECT MIN(request_time) FROM access_logs"
@@ -62,7 +50,7 @@ def find_earliest_date():
 
 def find_latest_date():
     try:
-        conn = psycopg2.connect(**db_config)
+        conn = psycopg2.connect(**db_config_main)
         cursor = conn.cursor()
 
         query = "SELECT MAX(request_time) FROM access_logs"
@@ -81,7 +69,7 @@ def find_latest_date():
 def get_logs(start_date_str, end_date_str, ip_address):
     try:
         # Установка соединения с БД
-        conn = psycopg2.connect(**db_config)
+        conn = psycopg2.connect(**db_config_main)
         cursor = conn.cursor()
 
         # Подготовка и выполнение SQL-запроса с использованием параметров
@@ -147,7 +135,7 @@ def input_data():
 
 
 def get_result(logs):
-    with open('src/outputs/result.json', 'w') as file:
+    with open(RESULT_PATH + '/result.json', 'w') as file:
         json.dump(logs, file, indent=4)
 
 
