@@ -14,6 +14,7 @@ def load_config():
 config_data = load_config()
 RESULT_PATH = config_data["result_files_path"]
 LOGS_PATH = config_data["log_file_path"]
+NAME_PROGRAMM = config_data["name_programm"]
 
 db_config_main = {
     'dbname': config_data['database']['dbname'],
@@ -40,7 +41,7 @@ def save_config(config):
 
 # Редактирование данных в конфигурационном файле
 def edit_config():
-    print("Доступные разделы для редактирования:")
+    print("\nДоступные разделы для редактирования:")
     for section in config_data["user_editable_fields"]:
         print(f"- {section}")
 
@@ -48,7 +49,7 @@ def edit_config():
 
     if section in config_data["user_editable_fields"]:
         # Редактирование значений в выбранном разделе
-        print(f"Редактирование раздела '{section}':")
+        print(f"\nРедактирование раздела '{section}':\n")
         for key, value in config_data[section].items():
             new_value = input(f"Введите новое значение для '{key}' (текущее значение: {value}): ")
             config_data[section][key] = new_value
@@ -59,9 +60,9 @@ def edit_config():
 
         # Сохранение изменений в конфигурационном файле
         save_config(config_data)
-        print("Конфигурационный файл успешно обновлен.")
+        print("Конфигурационный файл успешно обновлен.\n")
     else:
-        print("Неверный раздел для редактирования.")
+        print("Неверный раздел для редактирования.\n")
 
 
 # Проверка подключения к базе данных PostgreSQL
@@ -84,7 +85,7 @@ def check_postgres_connection(config):
 # Главная функция программы
 def main():
     while True:
-        print("Меню:")
+        print("\nМеню:")
         print("1. Редактировать данные в конфигурационном файле")
         print("2. Проверить подключение к базе данных PostgreSQL")
         print("3. Выход")

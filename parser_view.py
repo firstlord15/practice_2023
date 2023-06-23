@@ -1,11 +1,11 @@
 import sys
-from config import db_config_main
+from config import db_config_main, NAME_PROGRAMM
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, \
     QComboBox, QPushButton
 from PySide6.QtGui import QColor, QIcon, QPalette, Qt
 from PySide6.QtCore import Qt
 import psycopg2
-import api_view
+from api_view import start_program_api
 
 data_cache = {}  # Словарь для кэширования данных
 
@@ -25,14 +25,10 @@ def check():
         print('База данных пуста. Открытие приложения невозможно.')
         sys.exit()
 
-
-check()
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Aggregator Apache logs")
+        self.setWindowTitle(NAME_PROGRAMM)
 
         # Настройка иконки формы
         icon = QIcon("src/files/Hyper_Alt.png")
@@ -77,18 +73,14 @@ class MainWindow(QMainWindow):
         # Создание флажков (checkbox) для сортировки
         self.sort_ip_button = QPushButton("Сортировать по IP")
         self.sort_date_button = QPushButton("Сортировать по дате")
-        self.sort_date_button.setFixedWidth(200)
-        self.sort_ip_button.setFixedWidth(200)
 
         # Создание выпадающего списка (combobox) для выбора IP
         self.ip_combobox = QComboBox()
-        self.ip_combobox.setFixedWidth(200)
         self.ip_combobox.addItems(['None'] + sorted(unique_ips))
         self.ip_combobox.setStyleSheet("QComboBox { color: black; }")
 
         # Создание кнопки фильтрации
         self.filter_button = QPushButton("Применить фильтр")
-        self.filter_button.setFixedWidth(200)
         self.filter_button.clicked.connect(self.apply_filter)
         self.api_button = QPushButton("Сохранить в json файле")
         self.api_button.clicked.connect(self.api)
@@ -160,7 +152,7 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def api():
-        exec(open('api_view.py').read())
+        start_program_api()
         sys.exit()
 
     def apply_filter(self):
@@ -178,7 +170,7 @@ class MainWindow(QMainWindow):
             self.table_widget.setRowHidden(row, item.text() != selected_ip)
 
 
-def start_program():
+def start_program_parser_view():
     app = QApplication(sys.argv)
     # Установка темного фона
 
@@ -195,4 +187,5 @@ def start_program():
 
 
 if __name__ == "__main__":
-    start_program()
+    check()
+    start_program_parser_view()
