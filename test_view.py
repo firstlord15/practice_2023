@@ -1,8 +1,7 @@
 import sys
-import os
 from config import load_config
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, \
-    QComboBox, QPushButton, QHBoxLayout
+    QComboBox, QPushButton
 from PySide6.QtGui import QColor, QIcon, QPalette, Qt
 from PySide6.QtCore import Qt
 import psycopg2

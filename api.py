@@ -146,16 +146,24 @@ def input_data():
     return [start, end, IP]
 
 
-print('Самая ранняя дата:', find_earliest_date())
-print('Самая поздняя дата:', find_latest_date())
-print('Все виды IP:', find_unique_ips(), '\n')
+def get_result(logs):
+    with open('src/outputs/result.json', 'w') as file:
+        json.dump(logs, file, indent=4)
 
-data = input_data()
-start_date = data[0]
-end_date = data[1]
-ip_log = data[2]
 
-logs = get_logs(start_date, end_date, ip_log)
+def main():
+    print('Самая ранняя дата:', find_earliest_date())
+    print('Самая поздняя дата:', find_latest_date())
+    print('Все виды IP:', find_unique_ips(), '\n')
 
-with open('result.json', 'w') as file:
-    json.dump(logs, file, indent=4)
+    data = input_data()
+    start_date = data[0]
+    end_date = data[1]
+    ip_log = data[2]
+
+    logs = get_logs(start_date, end_date, ip_log)
+    get_result(logs)
+
+
+if __name__ == "__main__":
+    main()
