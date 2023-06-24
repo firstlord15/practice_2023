@@ -76,11 +76,14 @@ class MyForm(QDialog):
 
 
 def start_program_api():
-    app = QApplication(sys.argv)
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication(sys.argv)
+
     form = MyForm()
     form.show()
     form.setFixedSize(400, 200)
-    sys.exit(app.exec())
+    app.exec_()
 
 
 if __name__ == "__main__":

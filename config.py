@@ -30,6 +30,7 @@ config_data = load_config()
 RESULT_PATH = config_data["result_files_path"]
 LOGS_PATH = config_data["log_file_path"]
 NAME_PROGRAMM = config_data["name_programm"]
+ICON_PATH = config_data["icon_path"]
 
 db_config_main = {
     'dbname': config_data['database']['dbname'],

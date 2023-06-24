@@ -1,11 +1,11 @@
 import sys
-from config import db_config_main, NAME_PROGRAMM
+from config import db_config_main, NAME_PROGRAMM, ICON_PATH
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, \
     QComboBox, QPushButton
 from PySide6.QtGui import QColor, QIcon, QPalette, Qt
 from PySide6.QtCore import Qt
 import psycopg2
-from api_view import start_program_api
+from api_view import start_program_api, MyForm
 
 data_cache = {}  # Словарь для кэширования данных
 
@@ -25,13 +25,15 @@ def check():
         print('База данных пуста. Открытие приложения невозможно.')
         sys.exit()
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(NAME_PROGRAMM)
+        self.second_window = None
 
         # Настройка иконки формы
-        icon = QIcon("src/files/Hyper_Alt.png")
+        icon = QIcon(ICON_PATH)
         self.setWindowIcon(icon)
 
         # Подключение к базе данных
@@ -150,10 +152,12 @@ class MainWindow(QMainWindow):
         date_column_index = 3  # Индекс столбца даты
         self.table_widget.sortItems(date_column_index, Qt.SortOrder.AscendingOrder)
 
-    @staticmethod
-    def api():
-        start_program_api()
-        sys.exit()
+    def api(self):
+        if not self.second_window:
+            self.second_window = MyForm()
+
+        self.second_window.setFixedSize(400, 200)
+        self.second_window.show()
 
     def apply_filter(self):
         selected_ip = self.ip_combobox.currentText()
@@ -183,7 +187,7 @@ def start_program_parser_view():
     window.setMinimumSize(1000, 600)
     window.show()
 
-    sys.exit(app.exec())
+    app.exec_()
 
 
 if __name__ == "__main__":

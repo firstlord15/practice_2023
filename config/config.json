@@ -14,8 +14,9 @@
         "username": "postgres",
         "password": "0909"
     },
-    "log_file_path": "main.py",
+    "log_file_path": "src/log/logs.log",
     "result_files_path": "src/outputs",
+    "icon_path": "src/files/Hyper_Alt.png",
     "user_editable_fields": [
         "postgres",
         "database",
