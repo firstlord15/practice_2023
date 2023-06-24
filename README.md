@@ -9,7 +9,7 @@
 
 1. Клонируйте репозиторий в нужную папку:
 
-        `git clone https://github.com/firstlord15/practice_2023.git`
+        git clone https://github.com/firstlord15/practice_2023.git
 
 2. Откройте файл [`installer.bat`](bin/installer.bat) в папке [`bin`](bin) проекта, после чего дождитесь окончания загрузки.
 
