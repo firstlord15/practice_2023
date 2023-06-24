@@ -68,7 +68,8 @@ def edit_config():
         try:
             while True:
                 for key, value in config_data[section].items():
-                    new_value = input(f"Введите новое значение для '{key}' (текущее значение: {value}, для выхода введите 'exit'): ")
+                    new_value = input(
+                        f"Введите новое значение для '{key}' (текущее значение: {value}, для выхода введите 'exit'): ")
                     if new_value.lower() == "exit":
                         break
                     if key == "log_file_path" and not os.path.exists(new_value):
@@ -78,11 +79,18 @@ def edit_config():
                             if new_value.lower() == "exit":
                                 break
                     config_data[section][key] = new_value
-                else:
-                    break
+
+                    # Если редактируются данные в разделе 'postgres',
+                    # то также меняем пароль пользователя базы данных
+                    if section == "postgres" and key == "password":
+                        change_password(new_value)
+
+                save_config(config_data)
+                print("Конфигурационный файл успешно обновлен.\n")
         except AttributeError:
             if isinstance(config_data[section], str):
-                new_value = input(f"Введите новое значение для '{section}' (текущее значение: {config_data[section]}, для выхода введите 'exit'): ")
+                new_value = input(
+                    f"Введите новое значение для '{section}' (текущее значение: {config_data[section]}, для выхода введите 'exit'): ")
                 if new_value.lower() == "exit":
                     pass
                 elif section == "log_file_path" and not os.path.exists(new_value):
@@ -96,13 +104,15 @@ def edit_config():
             else:
                 while True:
                     for value in config_data[section]:
-                        new_value = input(f"Введите новое значение для '{section} -> {value}' (текущее значение: {config_data[section][value]}, для выхода введите 'exit'): ")
+                        new_value = input(
+                            f"Введите новое значение для '{section} -> {value}' (текущее значение: {config_data[section][value]}, для выхода введите 'exit'): ")
                         if new_value.lower() == "exit":
                             break
                         if value == "log_file_path" and not os.path.exists(new_value):
                             while not os.path.exists(new_value):
                                 print(f"Файл '{new_value}' не найден.")
-                                new_value = input(f"Введите новое значение для '{section} -> {value}' (для выхода введите 'exit'): ")
+                                new_value = input(
+                                    f"Введите новое значение для '{section} -> {value}' (для выхода введите 'exit'): ")
                                 if new_value.lower() == "exit":
                                     break
                         config_data[section][value] = new_value
@@ -120,6 +130,26 @@ def edit_config():
         print("Неверный раздел для редактирования.\n")
         edit_config()
 
+
+def change_password(new_password):
+    conn = psycopg2.connect(
+        host="localhost",
+        port=5432,
+        user="your_username",
+        password="your_current_password",
+        database="your_database_name"
+    )
+    conn.autocommit = True
+
+    # Изменение пароля
+    with conn.cursor() as cursor:
+        cursor.execute(f"ALTER USER your_username WITH PASSWORD '{new_password}'")
+
+    # Обновление пароля в базе данных
+    with conn.cursor() as cursor:
+        cursor.execute("UPDATE database SET password = %s WHERE username = %s", (new_password, "your_username"))
+
+    conn.close()
 
 
 # Проверка подключения к базе данных PostgreSQL
