@@ -55,6 +55,11 @@ def save_config(config):
         json.dump(config, config_file, indent=4)
 
 
+def change_password(new_password):
+    config_data["database"]["password"] = new_password
+    save_config(config_data)
+
+
 def edit_config():
     print("\nДоступные разделы для редактирования:")
     for section in config_data["user_editable_fields"]:
@@ -80,13 +85,10 @@ def edit_config():
                                 break
                     config_data[section][key] = new_value
 
-                    # Если редактируются данные в разделе 'postgres',
-                    # то также меняем пароль пользователя базы данных
                     if section == "postgres" and key == "password":
                         change_password(new_value)
-
-                save_config(config_data)
-                print("Конфигурационный файл успешно обновлен.\n")
+                else:
+                    break
         except AttributeError:
             if isinstance(config_data[section], str):
                 new_value = input(
@@ -123,33 +125,13 @@ def edit_config():
         if section == "postgres":
             check_postgres_connection(config_data)
 
+
         # Сохранение изменений в конфигурационном файле
         save_config(config_data)
         print("Конфигурационный файл успешно обновлен.\n")
     else:
         print("Неверный раздел для редактирования.\n")
         edit_config()
-
-
-def change_password(new_password):
-    conn = psycopg2.connect(
-        host="localhost",
-        port=5432,
-        user="your_username",
-        password="your_current_password",
-        database="your_database_name"
-    )
-    conn.autocommit = True
-
-    # Изменение пароля
-    with conn.cursor() as cursor:
-        cursor.execute(f"ALTER USER your_username WITH PASSWORD '{new_password}'")
-
-    # Обновление пароля в базе данных
-    with conn.cursor() as cursor:
-        cursor.execute("UPDATE database SET password = %s WHERE username = %s", (new_password, "your_username"))
-
-    conn.close()
 
 
 # Проверка подключения к базе данных PostgreSQL
