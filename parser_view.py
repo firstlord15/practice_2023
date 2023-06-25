@@ -5,7 +5,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWid
 from PySide6.QtGui import QColor, QIcon, QPalette, Qt
 from PySide6.QtCore import Qt
 import psycopg2
-from api_view import start_program_api, MyForm
+from Practice_2023.api_view import MyForm
 
 data_cache = {}  # Словарь для кэширования данных
 
